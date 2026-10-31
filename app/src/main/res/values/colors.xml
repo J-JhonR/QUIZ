@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="choice_default">#FFDAB9</color>
+    <color name="choice_correct">#3CB371</color>
+    <color name="choice_wrong">#F08080</color>
+</resources>
