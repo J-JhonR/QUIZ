@@ -7,42 +7,42 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentTop="true"
+        android:background="#3F51B5"
+        app:titleTextColor="#FFFFFF" />
+
     <TextView
         android:id="@+id/flashcard_question"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:text="Quel est le 44eme president des Etats-Unis?"
-        android:textSize="40sp"
-        android:gravity="center"
-        android:textColor="@android:color/black"
+        android:layout_below="@id/toolbar"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:background="@drawable/card_background"
         android:elevation="5dp"
-        />
-
+        android:gravity="center"
+        android:padding="16dp"
+        android:text="Question"
+        android:textColor="#455A64"
+        android:textSize="30sp" />
 
     <TextView
         android:id="@+id/choice_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/flashcard_question"
-        android:layout_marginTop="36dp"
-        android:background="#FFDAB9"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@color/choice_default"
         android:gravity="center"
         android:padding="16dp"
-        android:text="Bill Clinton"
-        android:textColor="#3F51B5"
-        android:textSize="20sp" />
-
-    <TextView
-        android:id="@+id/choice_3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/choice_2"
-        android:layout_marginTop="12dp"
-        android:background="#FFDAB9"
-        android:gravity="center"
-        android:padding="16dp"
-        android:text="Barack Obama"
         android:textColor="#3F51B5"
         android:textSize="20sp" />
 
@@ -52,12 +52,53 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/choice_1"
         android:layout_marginTop="12dp"
-        android:background="#FFDAB9"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@color/choice_default"
         android:gravity="center"
         android:padding="16dp"
-        android:text="George H. W. Bush"
         android:textColor="#3F51B5"
         android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/choice_3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/choice_2"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@color/choice_default"
+        android:gravity="center"
+        android:padding="16dp"
+        android:textColor="#3F51B5"
+        android:textSize="20sp" />
+    <TextView
+        android:id="@+id/choice_4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/choice_3"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@color/choice_default"
+        android:gravity="center"
+        android:padding="16dp"
+        android:textColor="#3F51B5"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/next_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_margin="16dp"
+        android:padding="12dp"
+        android:text="Suivant"
+        android:textColor="#3F51B5"
+        android:textSize="18sp" />
+
     <ImageView
         android:id="@+id/toggle_choices_visibility"
         android:layout_width="40dp"
@@ -66,5 +107,14 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="16dp"
         android:src="@drawable/ic_visibility" />
+
+    <ImageView
+        android:id="@+id/add_button"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_add" />
 
 </RelativeLayout>
