@@ -10,24 +10,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 
-// Une carte : une question, sa bonne réponse et trois fausses réponses
-data class Card(
-    val question: String,
-    val answer: String,
-    val wrong1: String,
-    val wrong2: String,
-    val wrong3: String
-)
-
 class MainActivity : AppCompatActivity() {
 
-    // Les 4 cartes de départ
-    private val cards = mutableListOf(
-        Card("Quel est le 44e président des États-Unis ?", "Barack Obama", "Bill Clinton", "George H. W. Bush", "Jimmy Carter"),
-        Card("Quelle est la capitale d'Haïti ?", "Port-au-Prince", "Artibonite", "Port-de-Paix", "Cayes"),
-        Card("Quel est le plus grand océan du monde ?", "Pacifique", "Indien", "Atlantique", "Arctique"),
-        Card("Combien de continents y a-t-il ?", "Sept", "Huit", "Trois", "Dix")
-    )
+    // Accès à la base de données
+    lateinit var flashcardDatabase: FlashcardDatabase
+
+    // Copie locale de toutes les cartes, relue depuis la base
+    private var cards = mutableListOf<Flashcard>()
 
     private var currentIndex = 0         // carte affichée
     private var correctIndex = 0         // position de la bonne réponse parmi les 4 choix
@@ -38,7 +27,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var choiceViews: List<TextView>
     private lateinit var toggleIcon: ImageView
 
-    // Reçoit la nouvelle carte renvoyée par AddCardActivity
+    // Reçoit la carte créée dans AddCardActivity
     private val addCardLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -52,7 +41,11 @@ class MainActivity : AppCompatActivity() {
 
             if (question.isNotBlank() && answer.isNotBlank() &&
                 wrong1.isNotBlank() && wrong2.isNotBlank() && wrong3.isNotBlank()) {
-                cards.add(Card(question, answer, wrong1, wrong2, wrong3))
+                // 1. Écrire la carte dans la base
+                flashcardDatabase.insertCard(Flashcard(question, answer, wrong1, wrong2, wrong3))
+                // 2. Relire toutes les cartes depuis la base
+                cards = flashcardDatabase.getAllCards().toMutableList()
+                // 3. Afficher la nouvelle carte (la dernière)
                 currentIndex = cards.size - 1
                 showCard()
             }
@@ -62,6 +55,13 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // Ouvre la base, ajoute les cartes de départ si elle est vide, puis charge la liste
+        flashcardDatabase = FlashcardDatabase(this)
+        if (flashcardDatabase.getAllCards().isEmpty()) {
+            seedStarterCards()
+        }
+        cards = flashcardDatabase.getAllCards().toMutableList()
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -106,6 +106,18 @@ class MainActivity : AppCompatActivity() {
         showCard()
     }
 
+    // Enregistre les 4 cartes de départ dans la base (premier lancement seulement)
+    private fun seedStarterCards() {
+        flashcardDatabase.insertCard(Flashcard("Quel est le 44e président des États-Unis ?", "Barack Obama",
+            "Bill Clinton", "George H. W. Bush", "Jimmy Carter"))
+        flashcardDatabase.insertCard(Flashcard("Quelle est la capitale d'Haïti ?", "Port-au-Prince",
+            "Artibonite", "Port-de-Paix", "Cayes"))
+        flashcardDatabase.insertCard(Flashcard("Quel est le plus grand océan du monde ?", "Pacifique",
+            "Indien", "Atlantique", "Arctique"))
+        flashcardDatabase.insertCard(Flashcard("Combien de continents y a-t-il ?", "Sept",
+            "Huit", "Trois", "Dix"))
+    }
+
     // Affiche la carte courante avec ses 4 choix mélangés
     private fun showCard() {
         val card = cards[currentIndex]
@@ -113,7 +125,12 @@ class MainActivity : AppCompatActivity() {
         questionView.text = card.question
 
         // La bonne réponse et les 3 fausses, mélangées
-        val options = listOf(card.answer, card.wrong1, card.wrong2, card.wrong3).shuffled()
+        val options = listOf(
+            card.answer,
+            card.wrongAnswer1.orEmpty(),
+            card.wrongAnswer2.orEmpty(),
+            card.wrongAnswer3.orEmpty()
+        ).shuffled()
         correctIndex = options.indexOf(card.answer)
 
         val visibility = if (isShowingAnswers) View.VISIBLE else View.GONE
